@@ -10,7 +10,6 @@ class SlidingWindowAlgorithm():
     def listComprehension(sequence):
         # List comprehension version
         triple_sum = lambda idx : int(sequence[idx]) + int(sequence[idx+1]) + int(sequence[idx+2])
-        print([1 for idx in range(len(sequence)-3) if triple_sum(idx) < triple_sum(idx+1)])
         count = sum([1 for idx in range(len(sequence)-3) if triple_sum(idx) < triple_sum(idx+1)])
         
         print("The count with list comprehension is:", count)
