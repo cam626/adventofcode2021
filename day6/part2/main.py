@@ -3,35 +3,47 @@ import numpy as np
 from tqdm import tqdm
 
 
+class Timers():
+    def __init__(self, timerList):
+        self.timers = {}
+
+        largestTimer = max(timerList)
+
+        for element in range(10):
+            self.timers[element] = 0
+
+        for element in timerList:
+            self.timers[element] += 1
+
+
+    def simulate(self, numDays):
+        for _ in tqdm(range(numDays)):
+            # Spawn new children
+            self.timers[9] = self.timers[0]
+
+            # Move parents to new timer location
+            self.timers[7] += self.timers[0]
+            self.timers[0] = 0
+
+            # Shift all timers down
+            for i in range(0, 9):
+                self.timers[i] = self.timers[i+1]
+
+            self.timers[9] = 0
+
+    
+    def numTimers(self):
+        s = 0
+        for key in self.timers:
+            s += self.timers[key]
+
+        return s
+
+
 def parse_file(filename):
     file = open(filename, "r")
     strTimers = file.read().strip("\n").split(",")
     return np.array([int(timer) for timer in strTimers])
-
-
-def decreaseTimers(timers):
-    timers -= 1
-
-
-def spawnChildren(timers):
-    numNewChildren = len(timers) - np.count_nonzero(timers)
-
-    newChildren = np.ones(numNewChildren) * 9
-    timers = np.append(timers, newChildren)
-    
-    return timers
-
-
-def resetParents(timers):
-    timers[np.where(timers == 0)] = 7
-
-
-def simulate(timers, numDays):
-    for day in tqdm(range(numDays)):
-        timers = spawnChildren(timers)
-        resetParents(timers)
-        decreaseTimers(timers)
-    return timers
 
 
 if __name__ == "__main__":
@@ -40,5 +52,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     timers = parse_file(args.filename)
-    timers = simulate(timers, 256)
-    print(len(timers))
+    t = Timers(timers)
+    t.simulate(256)
+    print(t.numTimers())
