@@ -2,7 +2,8 @@ import argparse
 import numpy as np
 
 def fuelCost(crabPositions, position):
-    return np.sum(np.abs(crabPositions - position))
+    d = np.abs(crabPositions - position)
+    return np.sum(d * (d+1) / 2)
 
 
 def findBestPosition(crabPositions):
